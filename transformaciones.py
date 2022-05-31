@@ -1,24 +1,20 @@
 import numpy as np
 import pandas as pd
 
-#
-# 
-# 
-
 nortegrande = ['Chacalluta, Arica Ap.','Diego Aracena Iquique Ap.','Desierto de Atacama, Caldera  Ad.',
-'Putre']
-nortegrande2 = ['El Loa, Calama Ad.','Copiapó Universidad de Atacama','Visviri Tenencia']
-nortechico = ['La Florida, La Serena Ad.','Freirina Nicolasa']
-nortechico2 = ['Vicuña, Parque Los Pimientos']
+'Putre','El Loa, Calama Ad.','Copiapó Universidad de Atacama','Visviri Tenencia'] 
+nortechico = ['La Florida, La Serena Ad.','Freirina Nicolasa','Vicuña, Parque Los Pimientos',
+'Liceo Samuel Román Rojas (Combarbalá)']
 centro = ['Quinta Normal, Santiago','Pudahuel Santiago ',"General Bernardo O'Higgins, Chillán Ad.",'La Araucanía Ad.',
-'General Freire, Curicó Ad.']
-centro2 = ['Eulogio Sánchez, Tobalaba Ad.','Carriel Sur, Concepción Ap.','Los Libertadores','Termas de Chillán']
-sur=['Pichoy, Valdivia Ad.','El Tepual  Puerto Montt Ap.','Quellón Ad.','Maquehue, Temuco Ad.','Quellón Ad.']
-sur2 = ['Cañal Bajo,  Osorno Ad.','Futaleufú Ad.']
+'General Freire, Curicó Ad.','Eulogio Sánchez, Tobalaba Ad.','Carriel Sur, Concepción Ap.','Los Libertadores',
+'Termas de Chillán','Carriel Sur, Concepción Ap.','El Paico','San Felipe Escuela Agrícola','Lo Prado Cerro San Francisco',
+'Lord Cochrane Ad.','Rancagua','Retiro Copihue','Rodelillo, Ad.','San José  Guayacán','Santo Domingo, Ad.']
+sur = ['Pichoy, Valdivia Ad.','El Tepual  Puerto Montt Ap.','Quellón Ad.','Maquehue, Temuco Ad.','Quellón Ad.',
+'Cañal Bajo,  Osorno Ad.','Futaleufú Ad.']
 austral = ['Teniente Gallardo, Puerto Natales Ad.','Puerto Aysén Ad.','Teniente Vidal, Coyhaique Ad.',
-'Fuentes Martínez, Porvenir Ad.']
-austral2 = ['Guardiamarina Zañartu, Pto Williams Ad.',
-'Carlos Ibañez, Punta Arenas Ap.']
+'Fuentes Martínez, Porvenir Ad.', 'Guardiamarina Zañartu, Pto Williams Ad.',
+'Carlos Ibañez, Punta Arenas Ap.','Balmaceda Ad.']
+
 
 df_agua_caida_diaria = pd.read_csv('csvlimpios\\agua_caida_diaria.csv')
 df_humedad = pd.read_csv('csvlimpios\\humedad.csv')
@@ -33,11 +29,9 @@ df = pd.merge(df,df_viento,left_on=['fecha','nombreEstacion'],right_on = ['fecha
 df = pd.merge(df,df_rocio,left_on=['fecha','nombreEstacion'],right_on = ['fecha','nombreEstacion'])
 df = pd.merge(df,df_temp,left_on=['fecha','nombreEstacion'],right_on = ['fecha','nombreEstacion'])
 
-df = df[(df['nombreEstacion'].isin(centro)) | (df['nombreEstacion'].isin(centro2)) | 
-(df['nombreEstacion'].isin(nortegrande)) | (df['nombreEstacion'].isin(nortegrande2)) |
-(df['nombreEstacion'].isin(nortechico)) | (df['nombreEstacion'].isin(nortechico2)) |
-(df['nombreEstacion'].isin(sur)) | (df['nombreEstacion'].isin(sur2)) |
-(df['nombreEstacion'].isin(austral)) | (df['nombreEstacion'].isin(austral2))]
+df = df[(df['nombreEstacion'].isin(centro)) | (df['nombreEstacion'].isin(nortegrande)) |
+(df['nombreEstacion'].isin(nortechico)) | (df['nombreEstacion'].isin(sur)) | 
+(df['nombreEstacion'].isin(austral)) ]
 
 df = df.drop_duplicates(subset=['fecha','nombreEstacion'])
 
@@ -56,27 +50,17 @@ df['lluvia'] = (df['mmAguaCaidadiaria']>0)*1
 
 
 conditions = [
-    ((df['nombreEstacion'].isin(nortegrande)) | (df['nombreEstacion'].isin(nortegrande2))),
-    ((df['nombreEstacion'].isin(nortechico)) | (df['nombreEstacion'].isin(nortechico2))),
-    ((df['nombreEstacion'].isin(centro)) | (df['nombreEstacion'].isin(centro2))),
-    ((df['nombreEstacion'].isin(sur)) | (df['nombreEstacion'].isin(sur2))),
-    (df['nombreEstacion'].isin(austral)) | (df['nombreEstacion'].isin(austral2))
+    (df['nombreEstacion'].isin(nortegrande)),
+    (df['nombreEstacion'].isin(nortechico)),
+    (df['nombreEstacion'].isin(centro)),
+    (df['nombreEstacion'].isin(sur)),
+    (df['nombreEstacion'].isin(austral))
     ]
 
 values = ['norte_grande','norte_chico', 'centro', 'sur', 'austral']
 
 df['zona'] = np.select(conditions, values)
 
-conditions = [
-    ((df['nombreEstacion'].isin(nortegrande)) | (df['nombreEstacion'].isin(nortechico)) |
-    (df['nombreEstacion'].isin(centro)) | (df['nombreEstacion'].isin(sur)) | (df['nombreEstacion'].isin(austral))),
-    ((df['nombreEstacion'].isin(nortechico2)) | (df['nombreEstacion'].isin(centro2)) | (df['nombreEstacion'].isin(sur2)) | 
-    (df['nombreEstacion'].isin(austral2)))
-    ]
-
-values = [1,2]
-
-df['grupo'] = np.select(conditions, values)
 
 fecha = df['fecha'].str.split(expand=True,pat="-")
 fecha.columns = ['año','mes','dia']
