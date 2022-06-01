@@ -1,7 +1,7 @@
 library(tidyverse)
 
 df = read.csv('csvlimpios/lluvia.csv',header = TRUE,sep = ",")
-
+df
 factor(df$zona)
 factor(df$estacion)
 

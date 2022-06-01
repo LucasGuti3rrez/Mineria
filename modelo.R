@@ -31,6 +31,7 @@ datos_validacion = df_recortada[sample(nrow(df_recortada), size = cant_validacio
 
 df_recortada = subset(df_recortada, !(ID %in% datos_validacion$ID))
 
+
 #Conjunto de datos prediccion
 datos_prediccion = df_recortada
 
@@ -50,43 +51,9 @@ formula_final = formula_final$formula
 modelo = glm(formula = formula_final, family = "binomial", data = datos_entrenamiento)
 
 ## Prediccion ##
-
-#datos con los que ajustamos el modelo
-
-predicciones.grupo1 = predict(object = modelo, newdata = datos_entrenamiento, type = 'response')
-
-predicciones.grupo1 = ifelse(predicciones.grupo1>0.5,yes = 1,no=0)
-
-datos_entrenamiento$predict = predicciones.grupo1
-
-datos_entrenamiento$comparacion = (datos_entrenamiento$lluvia == datos_entrenamiento$predict)*1
-
-#Exactitud
-
-sum(datos_entrenamiento$comparacion)/dim(datos_entrenamiento)[1]
-
-
-#Precision
-
-datos_entrenamiento.lluvia.pred = subset(datos_entrenamiento, predict == 1)
-
-sum(datos_entrenamiento.lluvia.pred$comparacion)/dim(datos_entrenamiento.lluvia.pred)[1]
-
-#Deteccion
-
-datos_entrenamiento.lluvia = subset(datos_entrenamiento, lluvia == 1)
-
-sum(datos_entrenamiento.lluvia$comparacion)/dim(datos_entrenamiento.lluvia)[1]
-
-#Falsa alarma
-
-datos_entrenamiento.nolluvia.pred = subset(datos_entrenamiento, lluvia == 0)
-
-sum(1 - datos_entrenamiento.nolluvia.pred$comparacion)/dim(datos_entrenamiento.nolluvia.pred)[1]
-
 #################################################################################
 
-#datos diferentes a los que utilizamos para ajustar el modelo
+#Validacion del modelo
 
 predicciones.validacion = predict(object = modelo, newdata = datos_validacion, type = 'response')
 
@@ -117,8 +84,4 @@ sum(datos_validacion.lluvia$comparacion)/dim(datos_validacion.lluvia)[1]
 datos_validacion.nolluvia.pred = subset(datos_validacion, lluvia == 0)
 
 sum(1 - datos_validacion.nolluvia.pred$comparacion)/dim(datos_validacion.nolluvia.pred)[1]
-
-
-###############################################################################
-
 
