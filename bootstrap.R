@@ -45,7 +45,7 @@ for (i in 1:n){
   
   formula_final = lluvia ~ TemperaturaMax + TemperaturarocioMax + zona + PresionAtmosfericaMin + 
     HumedadRelativaMin + TemperaturaMin + HumedadRelativaMax + 
-    VelocidadvientoMax + PresionAtmosfericaMax + TemperaturarocioMin
+    estacion + VelocidadvientoMax + PresionAtmosfericaMax + TemperaturarocioMin
   
   #Ajustamos el modelo
   

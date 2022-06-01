@@ -40,7 +40,7 @@ datos_prediccion = df_recortada
 
 m0 = glm(lluvia ~ 1,data = datos_entrenamiento, family ='binomial')
 
-mcompleto = glm(lluvia ~ zona + TemperaturaMax + TemperaturaMin + HumedadRelativaMax + HumedadRelativaMin + PresionAtmosfericaMax + PresionAtmosfericaMin + TemperaturarocioMax + TemperaturarocioMin + VelocidadvientoMax + VelocidadvientoMin,data = datos_entrenamiento, family ='binomial')
+mcompleto = glm(lluvia ~ zona + TemperaturaMax + TemperaturaMin + HumedadRelativaMax + HumedadRelativaMin + PresionAtmosfericaMax + PresionAtmosfericaMin + TemperaturarocioMax + TemperaturarocioMin + VelocidadvientoMax + VelocidadvientoMin + estacion,data = datos_entrenamiento, family ='binomial')
 
 formula_final = step(m0,direction = 'both',scope = formula(mcompleto))
 
