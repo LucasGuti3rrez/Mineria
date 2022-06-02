@@ -47,8 +47,6 @@ df.rename(columns={'mmtotal': 'mmAguaCaidadiaria','hum_min': 'HumedadRelativaMin
 'TemperaturarocioMin','temp_rocio_max':'TemperaturarocioMax','temp_rocio_prom':'TemperaturarocioProm',
 'temp_min':'TemperaturaMin','temp_max':'TemperaturaMax','temp_prom':'TemperaturaProm'}, inplace=True)
 
-df['lluvia'] = (df['mmAguaCaidadiaria']>0)*1
-
 
 conditions = [
     (df['nombreEstacion'].isin(nortegrande)),
@@ -83,6 +81,7 @@ values = ['verano','otoño', 'invierno', 'primavera']
 
 df['estacion'] = np.select(conditions, values)
 
+df = df.drop(columns=['año','mes','dia'])
 
 df.to_csv('csvlimpios\\lluvia.csv',index=False)
 print('termine')

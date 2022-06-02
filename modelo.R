@@ -9,6 +9,7 @@ names(df)
 
 df = tibble::rowid_to_column(df, "ID")
 
+df$lluvia = ifelse(df$mmAguaCaidadiaria>0,yes = 1,no=0)
 #Dividimos los datos
 
 cant_datos = dim(df)[1]
@@ -35,6 +36,13 @@ df_recortada = subset(df_recortada, !(ID %in% datos_validacion$ID))
 #Conjunto de datos prediccion
 datos_prediccion = df_recortada
 
+datos_prediccion$lluvia = NULL
+
+datos_prediccion$mmAguaCaidadiaria = NULL
+
+#Matriz correlaciones
+
+cor(df[,4:20]) 
 
 #Forward and Backward
 
@@ -46,18 +54,20 @@ formula_final = step(m0,direction = 'both',scope = formula(mcompleto))
 
 formula_final = formula_final$formula
 
+
 #Ajustamos el modelo
 
 modelo = glm(formula = formula_final, family = "binomial", data = datos_entrenamiento)
+?glm
 
-## Prediccion ##
+
 #################################################################################
-
-#Validacion del modelo
+########################## Validacion del modelo ################################
+#################################################################################
 
 predicciones.validacion = predict(object = modelo, newdata = datos_validacion, type = 'response')
 
-predicciones.validacion = ifelse(predicciones.validacion>0.5,yes = 1,no=0)
+predicciones.validacion = ifelse(predicciones.validacion>=0.5,yes = 1,no=0)
 
 datos_validacion$predict = predicciones.validacion
 
@@ -85,3 +95,8 @@ datos_validacion.nolluvia.pred = subset(datos_validacion, lluvia == 0)
 
 sum(1 - datos_validacion.nolluvia.pred$comparacion)/dim(datos_validacion.nolluvia.pred)[1]
 
+#################################################################################
+################################ Prediccion #####################################
+#################################################################################
+unique(datos_prediccion$nombreEstacion)
+df_rancagua = subset(datos_prediccion,nombreEstacion == 'Rancagua')

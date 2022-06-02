@@ -1,13 +1,14 @@
 library(tidyverse)
 
 df = read.csv('csvlimpios/lluvia.csv',header = TRUE,sep = ",")
-df
 factor(df$zona)
 factor(df$estacion)
 
 names(df)
 
 df = tibble::rowid_to_column(df, "ID")
+
+df$lluvia = ifelse(df$mmAguaCaidadiaria>0,yes = 1,no=0)
 
 n = 100
 exactitud = c()
@@ -56,7 +57,7 @@ for (i in 1:n){
   
   predicciones.validacion = predict(object = modelo, newdata = datos_validacion, type = 'response')
   
-  predicciones.validacion = ifelse(predicciones.validacion>0.5,yes = 1,no=0)
+  predicciones.validacion = ifelse(predicciones.validacion>=0.5,yes = 1,no=0)
   
   datos_validacion$predict = predicciones.validacion
   
