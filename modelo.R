@@ -1,4 +1,9 @@
 library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(caret)
+library(RColorBrewer)
+library(rattle)
 
 df = read.csv('csvlimpios/lluvia.csv',header = TRUE,sep = ",")
 
@@ -58,7 +63,7 @@ formula_final = formula_final$formula
 #Ajustamos el modelo
 
 modelo = glm(formula = formula_final, family = "binomial", data = datos_entrenamiento)
-?glm
+summary(modelo)
 
 
 #################################################################################
@@ -96,7 +101,12 @@ datos_validacion.nolluvia.pred = subset(datos_validacion, lluvia == 0)
 sum(1 - datos_validacion.nolluvia.pred$comparacion)/dim(datos_validacion.nolluvia.pred)[1]
 
 #################################################################################
-################################ Prediccion #####################################
+################################ Arbol #####################################
 #################################################################################
-unique(datos_prediccion$nombreEstacion)
-df_rancagua = subset(datos_prediccion,nombreEstacion == 'Rancagua')
+
+datos_entrenamiento.lluvia = subset(datos_entrenamiento, lluvia == 1)
+arbol = rpart(formula = mmAguaCaidadiaria ~ zona + TemperaturaMax + TemperaturaMin + HumedadRelativaMax + HumedadRelativaMin + PresionAtmosfericaMax + PresionAtmosfericaMin + TemperaturarocioMax + TemperaturarocioMin + VelocidadvientoMax + VelocidadvientoMin + estacion, data = datos_entrenamiento.lluvia)
+
+
+rpart.plot(arbol)
+fancyRpartPlot(arbol)
